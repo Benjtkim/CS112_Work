@@ -41,7 +41,6 @@ public class Sudoku {
      * otherwise.
      */
     private boolean[][][] subgridHasVal;
-    private int hi = 2;
     
     /*** ADD YOUR ADDITIONAL FIELDS HERE. ***/
     private boolean[][] rowHasVal;
