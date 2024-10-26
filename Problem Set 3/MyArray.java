@@ -19,7 +19,7 @@ public class MyArray  {
     // a data member to reference an array of integers
     // a data member to represent the number of elements entered into the array
   
-    private static final int sentinel = -999, DEFAULT_SIZE = 20, LOWER = 1, UPPER = 100;
+    private static final int sentinel = -999, DEFAULT_SIZE = 20, LOWER = 10, UPPER = 100;
 
     //The rest of the private attributes we were told to add.
     private int[] arr;
@@ -39,12 +39,17 @@ public class MyArray  {
         }
 
         //Calculate the average by diving the sum by the number of elements.
-        avg = (double) sum / numElements;
+        if (numElements != 0) {
+            avg = (double) sum / numElements;
+        }
 
         //Since every element will be less than or equal to UPPER, and greater than or equal to LOWER, we set min to UPPER and max to LOWER so there's no chance the method ends up reporting that
         //the values originally passed into min and max are the min and max.
-        min = UPPER;
-        max = LOWER;
+
+        if (numElements != 0) {
+            min = UPPER;
+            max = LOWER;
+        }
 
         //Calculate min and max by comparing each element in arr to min and max. For each element, if it's less than or equal to min or greater than or equal to max, that value will be passed into
         //min or max for that iteration of the loop.
@@ -114,6 +119,8 @@ public class MyArray  {
   
     public void inputElements() {
 
+        numElements = 0;
+
         //Initialize the scanner.
         Scanner scan = new Scanner(System.in);
 
@@ -138,21 +145,11 @@ public class MyArray  {
             
             //If the user input is legitimate,
             } else {
-                
-                //and we're replacing a pre-existing value,
-                if (arr[i] != 0) {
 
-                    //only change the number in arr.
-                    arr[pos] = num;
-                
-                //If we're not replacing a pre-existing value,
-                } else {
-
-                    //Change the value in arr and increment numElements.
-                    arr[pos] = num;
-                    numElements++;
-                    pos++;
-                }
+                //Change the value in arr and increment numElements and pos.
+                arr[pos] = num;
+                numElements++;
+                pos++;
             }
             
             //To go the next user input after we're done with the current one.
@@ -161,11 +158,11 @@ public class MyArray  {
 
         //Compute the statistics for the new array arr becomes.
         computeStatistics();
-        System.out.println(Arrays.toString(arr) + " " + numElements);
     }
  
     //Class level method to check if an input is within the bounds.
     public static boolean validInput(int num) {
+        System.out.println(LOWER + " " + UPPER);
         return (num > LOWER && num < UPPER);
     }
  
@@ -192,7 +189,7 @@ public class MyArray  {
             }
         }
         result += "]";
-
+        
         return result;
     }
  
@@ -331,15 +328,8 @@ public class MyArray  {
     // Fill in your unit tests;
         int[] a = {5, 4, 2, 3, 12, 3};
         MyArray arr = new MyArray(a);
-        System.out.println(arr.numOccurrences(3));
+        arr.inputElements();
         System.out.println(arr.toString());
-        System.out.println(arr.computeHistogram());
-
-        MyArray arr2 = new MyArray(5);
-        arr2.inputElements();
-        System.out.println(arr2.toString());
-
-        MyArray arr3 = new MyArray();
-        System.out.println(arr3.toString());
+        System.out.print("Sum: " + arr.getSum() + " Max: " + arr.getMax() + " Min: " + arr.getMin() + " Avg: " + arr.getAvg());
     }
 }

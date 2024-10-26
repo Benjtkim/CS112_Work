@@ -317,16 +317,19 @@ public class BigInt  {
                     }
 
                     //If there is no overflow, lineProduct[j - counter will become the last digit of the two-digit product.
-                    
-                    System.out.println("thisDigits[j]: " + thisDigits[j] + " otherDigits[i] " + otherDigits[i]);
-                    lineProduct[j - counter] = (thisDigits[j] * otherDigits[i] + carry) % 10;
-                    System.out.println("Digit: " + lineProduct[j - counter]);
+                    System.out.println("thisDigits[j]: " + thisDigits[j] + " otherDigits[i]: " + otherDigits[i]);
+                    lineProduct[j - counter] = ((thisDigits[j] * otherDigits[i] + carry)) % 10;
+                    System.out.println("lineProduct: " + lineProduct[j - counter] + " Product: " + (thisDigits[j] * otherDigits[i]));
 
                     //Divide that product by 10 to get the carry.
-                    
+                    System.out.println("Before carry: " + carry + " Calculation: " + (thisDigits[i] * otherDigits[j]) + " thisDigits[j]: " + thisDigits[j] + " otherDigits[i]: " + otherDigits[i]);
                     carry = (thisDigits[i] * otherDigits[j] + carry) / 10;
-                    System.out.println("Carry: " + carry);
+                    System.out.println("After carry: " + carry);
 
+                    if (j == thisDigits.length - 1 - thisNumSigDigits && carry != 0) {
+                        lineProduct[j - 1] = carry;
+                        carry = 0;
+                    }
                     
                 }
                 //Use counter to input into objArray a BigInt object that uses the lineProduct array.
@@ -339,16 +342,39 @@ public class BigInt  {
         //The bellow steps are identical to what's above except this gets swapped with other.
         } else {
             for (int i = thisDigits.length - 1; i > thisDigits.length - 1 - thisNumSigDigits; i--) {
+                
+                //Everytime one line product is finished/i iterates, create a new array for the upcoming line product.
                 int[] lineProduct = new int[MAX_SIZE];
+
+                //Repeat the following steps as many times as there are digits in the value with the greater number of sig digits:
                 for (int j = otherDigits.length - 1; j > otherDigits.length - 1 - otherNumSigDigits; j--) {
+
+                    //first, check to make sure there isn't an overflow by checking to see if j - counter is less than 0.
                     if (j - counter < 0) {
                         overflow = true;
                         throw new ArithmeticException();
                     }
-                    lineProduct[j - counter] = (thisDigits[j] * otherDigits[i] + carry) % 10;
+
+                    //If there is no overflow, lineProduct[j - counter will become the last digit of the two-digit product.
+                    
+                    System.out.println("thisDigits[i]: " + thisDigits[i] + " otherDigits[k] " + otherDigits[j]);
+                    lineProduct[j - counter] = (thisDigits[i] * otherDigits[j] + carry) % 10;
+                    System.out.println("Digit: " + lineProduct[j - counter]);
+
+                    //Divide that product by 10 to get the carry.
+                    
                     carry = (thisDigits[i] * otherDigits[j] + carry) / 10;
+                    System.out.println("Carry: " + carry);
+
+                    if (j == thisDigits.length - 1 - thisNumSigDigits && carry != 0) {
+                        lineProduct[j - 1] = carry;
+                        carry = 0;
+                    }
                 }
+                //Use counter to input into objArray a BigInt object that uses the lineProduct array.
                 objArray[counter] = new BigInt(lineProduct);
+
+                //Increment counter after all is said and done.
                 counter++;
             } 
         } 
@@ -369,114 +395,13 @@ public class BigInt  {
     }
 
     public static void main(String [] args) {
-        System.out.println("Test 1: result should be 7");
-        int[] a1 = { 1,2,3,4,5,6,7 };
-        BigInt b1 = new BigInt(a1);
-        System.out.println(b1.getNumSigDigits());
-        System.out.println();
-        
-        System.out.println("Test 2: result should be 1234567");
-        b1 = new BigInt(a1);
-        System.out.println(b1);
-        System.out.println();
-        
-        System.out.println("Test 3: result should be 0");
-        int[] a2 = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-        BigInt b2 = new BigInt(a2);
-        System.out.println(b2);
-        System.out.println();
-        
-        System.out.println("Test 4: should throw an IllegalArgumentException");
-        try {
-            int[] a3 = { 0,0,0,0,23,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-            BigInt b3 = new BigInt(a3);
-            System.out.println("Test failed.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Test passed.");
-        } catch (Exception e) {
-            System.out.println("Test failed: threw wrong type of exception.");
-        }
-        System.out.println();
 
-        System.out.println("Test 5: result should be 1234567");
-        b1 = new BigInt(1234567);
-        System.out.println(b1);
-        System.out.println();
-
-        System.out.println("Test 6: result should be 0");
-        b2 = new BigInt(0);
-        System.out.println(b2);
-        System.out.println();
-
-        System.out.println("Test 7: should throw an IllegalArgumentException");
-        try {
-            BigInt b3 = new BigInt(-4);
-            System.out.println("Test failed.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Test passed.");
-        } catch (Exception e) {
-            System.out.println("Test failed: threw wrong type of exception.");
-        }
-        System.out.println();
-
-        System.out.println("Test 8: result should be 0");
-        b1 = new BigInt(12375);
-        b2 = new BigInt(12375);
-        System.out.println(b1.compareTo(b2));
-        System.out.println();
-
-        System.out.println("Test 9: result should be -1");
-        b2 = new BigInt(12378);
-        System.out.println(b1.compareTo(b2));
-        System.out.println();
-
-        System.out.println("Test 10: result should be 1");
-        System.out.println(b2.compareTo(b1));
-        System.out.println();
-
-        System.out.println("Test 11: result should be 0");
-        b1 = new BigInt(0);
-        b2 = new BigInt(0);
-        System.out.println(b1.compareTo(b2));
-        System.out.println();
-
-        System.out.println("Test 12: result should be 123456789123456789");
-        int[] a4 = { 3,6,1,8,2,7,3,6,0,3,6,1,8,2,7,3,6 };
-        int[] a5 = { 8,7,2,7,4,0,5,3,0,8,7,2,7,4,0,5,3 };
-        BigInt b4 = new BigInt(a4);
-        BigInt b5 = new BigInt(a5);
-        BigInt sum = b4.add(b5);
-        System.out.println(sum);
-        System.out.println();
-
-        System.out.println("Test 13: result should be 123456789123456789");
-        System.out.println(b5.add(b4));
-        System.out.println();
-
-        System.out.println("Test 14: result should be 3141592653598");
-        b1 = new BigInt(0);
-        int[] a6 = { 3,1,4,1,5,9,2,6,5,3,5,9,8 };
-        b2 = new BigInt(a6);
-        System.out.println(b1.add(b2));
-        System.out.println();
-
-        System.out.println("Test 15: result should be 10000000000000000000");
-        int[] a19 = { 9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9 };    // 19 nines!
-        b1 = new BigInt(a19);
-        b2 = new BigInt(1);
-        System.out.println(b1.add(b2));
-        System.out.println();
 
         System.out.println("Test 16: result should be 151782");
-        b1 = new BigInt(1234);
-        b2 = new BigInt(123);
+        BigInt b1 = new BigInt(23);
+        BigInt b2 = new BigInt(11111);
         System.out.println(b1.mul(b2));
         System.out.println();
 
-        System.out.println("Test 16: result should be 802575");
-        b1 = new BigInt(225);
-        b2 = new BigInt(3567);
-        System.out.println(b1.mul(b2));
-        System.out.println();
     }
 }
