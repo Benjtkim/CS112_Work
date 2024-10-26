@@ -208,7 +208,6 @@ public class Sudoku {
          */
         return false;
     } 
-    private int hi = 2;
     
     /*
      * public "wrapper" method for solveRB().
