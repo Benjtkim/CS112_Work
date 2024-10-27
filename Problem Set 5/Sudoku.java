@@ -146,27 +146,7 @@ public class Sudoku {
     
     /*** ADD ANY ADDITIONAL METHODS HERE. ***/
     private boolean isSafe(int row, int col, int val) {
-        return (this.subgridHasVal[row/3][col/3][val] && this.rowHasVal[row][val] && this.columnHasVal[col][val]);
-    }
-
-    private int[] getCellNumbers(int n) {
-        int[] cellNumbers = new int[2];
-        int counter = 0;
-
-        for (int r = 0; r < this.grid.length; r++) {
-            for (int c = 0; c < this.grid[0].length; c++) {
-                cellNumbers[0] = r;
-                cellNumbers[1] = c;
-                
-                if (n == counter) {
-                    break;
-                }
-
-                counter++;
-            }
-        }
-
-        return cellNumbers;
+        return (!this.subgridHasVal[row/3][col/3][val] && !this.rowHasVal[row][val] && !this.columnHasVal[col][val]);
     }
          
     /*
@@ -185,19 +165,23 @@ public class Sudoku {
      *    18 ...
      */
     private boolean solveRB(int n) {
-        if (n == 80) {
+        if (n > 80) {
             return true;
         }
 
-        for (int num = 1; num <= 9; num++) {
-            if (this.isSafe(this.getCellNumbers(num)[0], this.getCellNumbers(num)[1], num)) {
-                this.placeVal(this.getCellNumbers(num)[0], this.getCellNumbers(num)[1], num);
+        if (this.valIsFixed[n / 9][n % 9]) {
+            return this.solveRB(n + 1);
+        }
 
-                if (this.solveRB(num + 1)) {
+        for (int num = 1; num <= 9; num++) {
+            if (this.isSafe(n / 9, n % 9, num)) {
+                this.placeVal(num, n / 9, n % 9);
+
+                if (this.solveRB(n + 1)) {
                     return true;
                 }
 
-                this.removeVal(this.getCellNumbers(num)[0], this.getCellNumbers(num)[1], num);
+                this.removeVal(num, n / 9, n % 9);
             }
         }
                 

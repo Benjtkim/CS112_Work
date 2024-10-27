@@ -1,8 +1,8 @@
 public class ArrayRecursion {
 
     public static void main(String[] args) {
-        Integer[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 10};
-        System.out.println(search(9, arr, 0));
+        String[] arr = {"abc","def","ghi","klm","nop","qrs"};
+        System.out.println(search("def", arr, 0));
     }
 
     public static boolean search(Object item, Object[] arr, int start) {
@@ -13,7 +13,7 @@ public class ArrayRecursion {
             return false;
         }
 
-        if (arr[start] == item) {
+        if (arr[start].equals(item)) {
             return true;
         } else {
             result = search(item, arr, start + 1);

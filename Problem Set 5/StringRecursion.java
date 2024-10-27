@@ -1,6 +1,6 @@
 public class StringRecursion {
     public static void main(String[] args) {
-        System.out.println(trim("terriers    "));
+        System.out.println(trim("   Hello, Rabbit      "));
         
     }
 
@@ -18,11 +18,16 @@ public class StringRecursion {
         } else if (str.equals("")) {
             return "";
         } 
-        String rest = trim(str.substring(1));
-        if (str.matches(".*[a-z].*")) {
-            rest = str.charAt(0) + rest;
+
+        if (str.charAt(0) == ' ' && str.charAt(str.length() - 1) == ' ') {
+            return trim(str.substring(1, str.length() - 1));
+        } else if (str.charAt(0) == ' ' && str.charAt(str.length() - 1) != ' ') {
+            return trim(str.substring(1));
+        } else if (str.charAt(0) != ' ' && str.charAt(str.length() - 1) == ' ') {
+            return trim(str.substring(0, str.length() - 1));
+        } else {
+            return str;
         }
-        return rest;
     }
 
     public static int find(char ch, String str) {
@@ -47,5 +52,15 @@ public class StringRecursion {
         }
         String rest = weave(str1.substring(1), str2.substring(1));
         return str1.charAt(0) + "" + str2.charAt(0) + rest;
+    }
+
+    public static int indexOf(char ch, String str) {
+        if (str == null || str.equals("")) {
+            return -1;
+        } else if (ch == str.charAt(0)) {
+          return 0;
+        }
+        int rest = 1 + find(ch, str.substring(1));
+        return rest;
     }
 }
