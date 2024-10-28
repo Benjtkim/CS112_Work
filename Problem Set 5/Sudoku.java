@@ -1,12 +1,14 @@
 /**
- * Sudoku.java
+ * File: Sudoku.java
  * 
- * Implementation of a class that represents a Sudoku puzzle and solves
+ * Description: Implementation of a class that represents a Sudoku puzzle and solves
  * it using recursive backtracking.
  *
- * Computer Science 112, Boston University
+ * Class: Computer Science 112, Boston University
  *
- * your name: 
+ * Name: Benjamin Kim
+ * 
+ * Date: 10/28/24
  *
  */
 
@@ -62,6 +64,9 @@ public class Sudoku {
         this.subgridHasVal = new boolean[3][3][10];        
 
         /*** INITIALIZE YOUR ADDITIONAL FIELDS HERE. ***/
+        
+        //These two fields will serve to inform whether a certain row or field has a certain value. 
+        //For example, if row or column 1 has the value 5, then rowHasVal or columnHasVal[1][4] will be true.
         this.rowHasVal = new boolean[9][10];
         this.columnHasVal = new boolean[9][10];
     }
@@ -76,6 +81,8 @@ public class Sudoku {
 
         
         /*** UPDATE YOUR ADDITIONAL FIELDS HERE. ***/
+        
+        //If we're inserting a value somewhere into the grid, we must be sure to update rowHasVal and columnHasVal.
         this.rowHasVal[row][val] = true;
         this.columnHasVal[col][val] = true;
     }
@@ -89,6 +96,8 @@ public class Sudoku {
         this.subgridHasVal[row/3][col/3][val] = false;
         
         /*** UPDATE YOUR ADDITIONAL FIELDS HERE. ***/
+
+        //If we're removing a value somewhere in the grid, we must be sure to update rowHasVal and columnHasVal.
         this.rowHasVal[row][val] = false;
         this.columnHasVal[col][val] = false;
     }  
@@ -145,6 +154,10 @@ public class Sudoku {
     }
     
     /*** ADD ANY ADDITIONAL METHODS HERE. ***/
+
+    //A method is needed for the program to determine if it can insert a value somewhere into the grid. In other words,
+    //isSafe will return true if and only if the subgrid, row, and column especified by row and col doesn't already contain the value 
+    //specified by val.
     private boolean isSafe(int row, int col, int val) {
         return (!this.subgridHasVal[row/3][col/3][val] && !this.rowHasVal[row][val] && !this.columnHasVal[col][val]);
     }
@@ -164,23 +177,37 @@ public class Sudoku {
      *     9 10 11 12 13 14 15 16 17
      *    18 ...
      */
+
+    //This method follows the exact same logic as the N-queens solver.
     private boolean solveRB(int n) {
+
+        //The base case is if n is 80 because the 80th cell is the last cell of the grid.
         if (n > 80) {
             return true;
         }
 
+        //The row specified by n can be obtained by using integer division and dividing it by 9, and the column 
+        //specified by n can be obtained by taking its modulus of 9. This method will cause the method to skip over
+        //a cell if it contains a fixed value.
         if (this.valIsFixed[n / 9][n % 9]) {
             return this.solveRB(n + 1);
         }
 
+        //For each of the valid inputs (1-9),
         for (int num = 1; num <= 9; num++) {
+            
+            //Check if it's safe to put that input into the cell.
             if (this.isSafe(n / 9, n % 9, num)) {
+
+                //If it is, place that value into the cell,
                 this.placeVal(num, n / 9, n % 9);
 
+                //and move onto the next.
                 if (this.solveRB(n + 1)) {
                     return true;
                 }
 
+                //If the program reaches this line, it has backtracked.
                 this.removeVal(num, n / 9, n % 9);
             }
         }
