@@ -161,26 +161,14 @@ public class StringNode {
      * and returns a reference to the resulting list.
      */
     public static StringNode insertSorted(StringNode str, char ch) {
-        StringNode newNode, trail, trav;
-
-        // Find where the character belongs.
-        trail = null;
-        trav = str;
-        while (trav != null && trav.ch < ch) {
-            trail = trav;
-            trav = trav.next;
+        if (str == null) {
+            str = new StringNode(ch, null);
+            return str;
+        } else if (str.ch > ch) {
+            str = new StringNode(ch, str);
+            return str;
         }
-
-        // Create and insert the new node.
-        newNode = new StringNode(ch, trav);
-        if (trail == null) {
-            // We never advanced the prev and trav references, so
-            // newNode goes at the start of the list.
-            str = newNode;
-        } else { 
-            trail.next = newNode;
-        }
-            
+        str.next = insertSorted(str.next, ch);
         return str;
     }
 
@@ -272,35 +260,19 @@ public class StringNode {
 
     /**
      * removeFirst - takes the linked-list string specified by str and 
-     * removes the first occurrence (if any) of the character ch in that string.
+     * removes the first occurrence (if any) of the character ch in that string
+     * using recursion.
      */
-    public static StringNode removeFirst(StringNode str, char ch) { 
-        StringNode trav = str;
-        StringNode trail = null;  // "trailing" ref; stays one node behind trav
-        
-        while (trav != null && trav.ch != ch) {
-            trail = trav;
-            trav = trav.next;
-        }
-                
-        if (trav == null) {
-            // If trav if null, that means ch was not found. 
-            // We simply return str, since the linked list was unchanged.
+    public static StringNode removeFirst(StringNode str, char ch) {
+        if (str == null) {
+            return null;
+        } else if (str.ch == ch) {
+            str = str.next;
             return str;
-        } else if (trail == null) {
-            // If trav is not null and trail is still null, that means the 
-            // first occurrence of ch is in the first node. Because of this,  
-            // we return a reference to the second node, because it is now the 
-            // new first node in the linked list.
-            return str.next;
-        } else {
-            // Remove the node containing ch by updating the previous node.
-            trail.next = trav.next;
-            
-            // The original first node is still the first node,
-            // so we just return str.
-            return str;
-        }
+        } 
+        str.next = removeFirst(str.next, ch);
+        return str;
+
     }
 
     /*
