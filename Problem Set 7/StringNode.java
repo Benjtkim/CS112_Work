@@ -95,15 +95,18 @@ public class StringNode {
     
 
     public static StringNode copy(StringNode str) {
-        StringNode trail = str;
-        StringNode trav = str.next;
-        StringNode copy = new StringNode(trail.ch, trav);
-        while (trav != null) {
-            new StringNode(trail.ch, trav);
-            trail = trail.next;
-            trav = trav.next;
+        StringNode firstNode = new StringNode(str.ch, null);
+        StringNode prevNode = firstNode;
+        StringNode nextNode;
+
+        while (str.next != null) {
+            nextNode = new StringNode(str.next.ch, null);
+            prevNode.next = nextNode;
+            prevNode = nextNode;
+            str = str.next;
         }
-        return copy;
+
+        return firstNode;
     }
 
     /**
