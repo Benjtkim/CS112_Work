@@ -50,6 +50,20 @@ public class StringNode {
         }
     }
 
+    public static void main(String[] args) throws IOException {
+        StringNode s1 = StringNode.convertIter("apple");
+        System.out.println(s1);
+
+        StringNode s2 = StringNode.convertRecur("banana");
+        System.out.println(s2);
+
+        StringNode s3 = StringNode.copyIter(s1);
+        System.out.println(s3);
+
+        StringNode s4 = StringNode.copyRecur(s2);
+        System.out.println(s4);
+    }
+
     /*****************************************************
      * Public methods (in alphabetical order)
      *****************************************************/
@@ -78,34 +92,61 @@ public class StringNode {
      * convert - converts a standard Java String object to a linked-list
      * string and returns a reference to the linked-list string
      */
-    public static StringNode convert(String s) {
-        if (s.length() == 0) {
+    public static StringNode convertIter(String s) {
+        if (s == null) {
             return null;
-        } else {
-            StringNode convRest = convert(s.substring(1));
-            StringNode firstNode = new StringNode(s.charAt(0), convRest);
-            return firstNode;
         }
+        StringNode firstNode = new StringNode(s.charAt(0), null);
+        StringNode prevNode = firstNode;
+        StringNode nextNode;
+        for (int i = 1; i < s.length(); i++) {
+            nextNode = new StringNode(s.charAt(i), null);
+            prevNode.next = nextNode;
+            prevNode = nextNode;
+        }
+        return firstNode;
+
     }
     
+    public static StringNode convertRecur(String s) {
+        if (s == "") {
+            return null;
+        }
+        StringNode convRest = convertRecur(s.substring(1));
+        StringNode firstNode = new StringNode(s.charAt(0), convRest);
+        return firstNode;
+
+    }
+
     /**
      * copy - returns a copy of the given linked-list string using iteration.
      */
 
     
 
-    public static StringNode copy(StringNode str) {
+    public static StringNode copyIter(StringNode str) {
+        if (str == null) {
+            return null;
+        }
         StringNode firstNode = new StringNode(str.ch, null);
         StringNode prevNode = firstNode;
         StringNode nextNode;
-
         while (str.next != null) {
-            nextNode = new StringNode(str.next.ch, null);
+            str = str.next;
+            nextNode = new StringNode(str.ch, null);
             prevNode.next = nextNode;
             prevNode = nextNode;
-            str = str.next;
         }
+        return firstNode;
 
+    }
+
+    public static StringNode copyRecur(StringNode str) {
+        if (str == null) {
+            return null;
+        }
+        StringNode copyRest = copyRecur(str.next);
+        StringNode firstNode = new StringNode(str.ch, copyRest);
         return firstNode;
     }
 
@@ -164,15 +205,7 @@ public class StringNode {
      * and returns a reference to the resulting list.
      */
     public static StringNode insertSorted(StringNode str, char ch) {
-        if (str == null) {
-            str = new StringNode(ch, null);
-            return str;
-        } else if (str.ch > ch) {
-            str = new StringNode(ch, str);
-            return str;
-        }
-        str.next = insertSorted(str.next, ch);
-        return str;
+        
     }
 
     /**
@@ -230,19 +263,7 @@ public class StringNode {
      */
 
     public static void printReverse(StringNode str) {
-        StringNode trav = str;
-        int LLLength = length(str);
-        char[] charList = new char[LLLength];
-        int count = 0;
-        while (trav != null) {
-            charList[LLLength - count - 1] = trav.ch;
-            count++;
-            trav = trav.next;
-        }
 
-        for (int i = 0; i < LLLength; i++) {
-            System.out.print(charList[i]);
-        }
     }
     
     /**
@@ -305,115 +326,8 @@ public class StringNode {
      */
               
     public static void toUpperCase(StringNode str) {
-        if (str == null) {
-            return;
-        }
-        toUpperCase(str.next);
-        str.ch = Character.toUpperCase(str.ch);
+
     } 
 
-    public static void main(String[] args) throws IOException {
-        StringNode copy, str, str1, str3;
-        String line;
-        int n;
-        char ch;
 
-        // convert, print, and toUpperCase
-        str = StringNode.convert("fine");
-        System.out.print("Here's a string: "); 
-        StringNode.print(str);
-        System.out.println();
-        System.out.print("Here it is in upper-case letters: "); 
-        StringNode.toUpperCase(str);
-        StringNode.print(str);
-        System.out.println();
-        System.out.println();
-
-        Scanner in = new Scanner(System.in);
-        
-        // read, toString, length, and printReverse.
-        System.out.print("Type a string: ");
-        String s = in.nextLine();
-        str1 = StringNode.convert(s);
-        System.out.print("Your string is: "); 
-        System.out.println(str1);        // implicit toString call
-        System.out.print("\nHere it is reversed: ");  
-        StringNode.printReverse(str1);
-        System.out.println("\nIts length is " + StringNode.length(str1) + 
-            " characters.");
-
-        // charAt
-        n = -1;
-        while (n < 0) {
-            System.out.print("\nWhat # character to get (>= 0)? ");
-            n = in.nextInt();
-            in.nextLine();
-        }
-        try {
-            ch = StringNode.charAt(str1, n);
-            System.out.println("That character is " + ch);
-        } catch (IllegalArgumentException e) {
-            System.out.println("The string is too short.");
-        }
-           
-        // deleteChar and copy
-        n = -1;
-        while (n < 0) {
-            System.out.print("\nWhat # character to delete (>= 0)? ");
-            n = in.nextInt();
-            in.nextLine();
-        }
-        copy = StringNode.copy(str1);
-        try {
-            str1 = StringNode.deleteChar(str1, n);
-            StringNode.print(str1);
-        } catch (IllegalArgumentException e) {
-            System.out.println("The string is too short.");
-        }
-        System.out.print("\nUnchanged copy: ");
-        StringNode.print(copy);
-        System.out.println();
-
-        // insertChar
-        n = -1;
-        while (n < 0) {
-            System.out.print("\nWhat # character to insert before (>= 0)? ");
-            n = in.nextInt();
-            in.nextLine();
-        }
-        System.out.print("What character to insert? ");
-        line = in.nextLine();
-        ch = line.charAt(0);
-        try {
-            str1 = StringNode.insertChar(str1, n, ch);
-            StringNode.print(str1);
-            System.out.println();
-        } catch (IllegalArgumentException e) {
-            System.out.println("The string is too short.");
-        }
-        
-        // removeFirst
-        System.out.print("What character to remove the first occurrence of? ");
-        line = in.nextLine();
-        ch = line.charAt(0);
-        try {
-            str1 = StringNode.removeFirst(str1, ch);
-            StringNode.print(str1);
-            System.out.println();
-        } catch (IllegalArgumentException e) {
-            System.out.println("The string is too short.");
-        }
-        
-        // insertSorted
-        System.out.print("\nType a string of characters in alphabetical order: ");
-        s = in.nextLine();
-        str3 = StringNode.convert(s);
-        System.out.print("What character to insert in order? ");
-        line = in.nextLine();
-        str3 = StringNode.insertSorted(str3, line.charAt(0));
-        StringNode.print(str3);
-        System.out.println();
-
-	in.close();
-    }
 }
