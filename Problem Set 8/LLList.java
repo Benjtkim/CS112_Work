@@ -3,7 +3,10 @@
  *
  * Computer Science 112, Boston University
  * 
- * modified by: 
+ * Description: Linked list class that implements the list interface.
+ * modified by: Benjamin Kim
+ * email: benjt@bu.edu
+ * Date: 11/28/24
  */
 
 import java.util.*;
@@ -58,6 +61,8 @@ public class LLList implements List {
             prevNode.next = nextNode;
             prevNode = nextNode;
         }
+
+        //Last just becomes nextNode after the loop is finished because the final node will be the last node that was created.
         last = nextNode;
         length = initItems.length;
     }
@@ -142,9 +147,15 @@ public class LLList implements List {
         } 
 
         Node newNode = new Node(item, null);
+
+        //If i is equal to the length, there's no need to iterate through the 
+        //linked list because we have the last variable. Just set last.next 
+        //to the newNode and last to the newNode afterwards.
         if (i == length) {
             last.next = newNode;
             last = newNode;
+
+        //If i is not equal to length, we have to get the previous node.
         } else{
             Node prevNode = getNode(i - 1);
             newNode.next = prevNode.next;
@@ -168,12 +179,19 @@ public class LLList implements List {
             throw new IndexOutOfBoundsException();
         }
 
+        //Variables for the object the method will return and the node that comes before the 
+        //one specified by i.
         Object removed;
         Node prevNode = getNode(i - 1);
+
+        //If we want to remove the last node in the linked list and return its item,
         if (i == length - 1) {
-            last = prevNode;
+
+            //set removed to the last item, set the next field of the previous node to null, 
+            //and set last to said node.
             removed = last.item;
             prevNode.next = null;
+            last = prevNode;
         } else {
             removed = prevNode.next.item;
             prevNode.next = prevNode.next.next;
