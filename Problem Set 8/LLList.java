@@ -58,7 +58,7 @@ public class LLList implements List {
             prevNode.next = nextNode;
             prevNode = nextNode;
         }
-
+        last = nextNode;
         length = initItems.length;
     }
 
@@ -99,9 +99,13 @@ public class LLList implements List {
      * If i == -1, it returns a reference to the dummy head node.
      */
     private Node getNode(int i) {
+        if (i == length) {
+            return last;
+        }
+
         Node trav = head;
         int travIndex = -1;
-
+        
         while (travIndex < i) {
             travIndex++;
             trav = trav.next;
@@ -135,13 +139,17 @@ public class LLList implements List {
     public boolean addItem(Object item, int i) {
         if (item == null || i < 0 || i > length) {
             throw new IllegalArgumentException();
-        }
+        } 
 
         Node newNode = new Node(item, null);
-        Node prevNode = getNode(i - 1);
-        newNode.next = prevNode.next;
-        prevNode.next = newNode;
-
+        if (i == length) {
+            last.next = newNode;
+            last = newNode;
+        } else{
+            Node prevNode = getNode(i - 1);
+            newNode.next = prevNode.next;
+            prevNode.next = newNode;
+        }
         length++;
         return true;
     }
@@ -160,10 +168,16 @@ public class LLList implements List {
             throw new IndexOutOfBoundsException();
         }
 
+        Object removed;
         Node prevNode = getNode(i - 1);
-        Object removed = prevNode.next.item;
-        prevNode.next = prevNode.next.next;
-
+        if (i == length - 1) {
+            last = prevNode;
+            removed = last.item;
+            prevNode.next = null;
+        } else {
+            removed = prevNode.next.item;
+            prevNode.next = prevNode.next.next;
+        }
         length--;
         return removed;
     }
@@ -185,21 +199,6 @@ public class LLList implements List {
 
         str = str + "}";
         return str;
-    }
-
-    public static LLList intersect(LLList list1, LLList list2) {
-        LLList inters = new LLList();
-        int i = 0;
-        int j = 0;
-        while (i < list1.length() && j < list2.length()) {
-            Object item1 = list1.getItem(i);
-            Object item2 = list2.getItem(j);
-            if (item2.equals(item1)) {
-                inters.addItem(item2, inters.length());
-                
-            }
-        }
-
     }
 
     /*
@@ -238,5 +237,27 @@ public class LLList implements List {
             nextNode = nextNode.next;
             return item;
         }
+    }
+
+    public static void main(String[] args) {
+        String[] letters2 = {"a", "b", "c", "d", "e"};
+        LLList list2 = new LLList(letters2);
+        System.out.println(list2);
+        System.out.println(list2.length());
+        // Add two items to the end of the list.
+        list2.addItem("f", 5);
+        list2.addItem("g", 6);
+        System.out.println(list2.getLastItem());
+        
+        // Remove three items from the end of the list.
+        System.out.println(list2);
+        System.out.println(list2.length());
+        list2.removeItem(6);
+        System.out.println(list2);
+        list2.removeItem(5);
+        System.out.println(list2);
+        list2.removeItem(4);
+        System.out.println(list2);
+        System.out.println(list2.getLastItem());
     }
 }
