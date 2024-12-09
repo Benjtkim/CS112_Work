@@ -13,7 +13,7 @@
 
 public class StringRecursion {
     public static void main(String[] args) {
-        System.out.println(trim("   Hello, Rabbit      "));
+        System.out.println(weave("hello", "apple"));;
         
     }
 
