@@ -94,6 +94,9 @@ public class ChainedHashTable implements HashTable {
      */
     public LLQueue<Object> search(Object key) {
         /** Replace the following line with your implementation. **/
+        if (key == null) {
+            return null;
+        }
         int index = h1(key);
         if (this.table[index] == null) {
             return null;
@@ -115,6 +118,9 @@ public class ChainedHashTable implements HashTable {
      */
     public LLQueue<Object> remove(Object key) {
         /** Replace the following line with your implementation. **/
+        if (key == null) {
+            return null;
+        }
         int index = h1(key);
         if (this.table[index] == null) {
             return null;
