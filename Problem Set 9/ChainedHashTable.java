@@ -39,6 +39,9 @@ public class ChainedHashTable implements HashTable {
         
     /* hash function */
     public int h1(Object key) {
+        if (key == null) {
+            throw new IllegalArgumentException();
+        }
         int h1 = key.hashCode() % table.length;
         if (h1 < 0) {
             h1 += table.length;
@@ -94,9 +97,6 @@ public class ChainedHashTable implements HashTable {
      */
     public LLQueue<Object> search(Object key) {
         /** Replace the following line with your implementation. **/
-        if (key == null) {
-            return null;
-        }
         int index = h1(key);
         if (this.table[index] == null) {
             return null;
@@ -118,16 +118,13 @@ public class ChainedHashTable implements HashTable {
      */
     public LLQueue<Object> remove(Object key) {
         /** Replace the following line with your implementation. **/
-        if (key == null) {
-            return null;
-        }
         int index = h1(key);
         if (this.table[index] == null) {
             return null;
         }
         Node trail = null;
         Node trav = this.table[index];
-        while (trav.key != key) {
+        while (trav.key != key && trav.next != null) {
             trail = trav;
             trav = trav.next;
         }
@@ -136,11 +133,18 @@ public class ChainedHashTable implements HashTable {
             this.table[index] = this.table[index].next;
             this.numKeys -= 1;
             return toReturn;
-        } else {
+        } else if (trail != null && trav.next != null) {
+            LLQueue<Object> toReturn = trav.values;
+            trail.next = trav.next;
+            this.numKeys -= 1;
+            return toReturn;
+        } else if (trail != null && trav.next == null && trav.key == key) {
             LLQueue<Object> toReturn = trav.values;
             trail.next = null;
             this.numKeys -= 1;
             return toReturn;
+        } else {
+            return null;
         }
     }
     
@@ -151,18 +155,7 @@ public class ChainedHashTable implements HashTable {
     }
 
     public double load() {
-        double numKeys = 0;
-        for (int i = 0; i < this.table.length; i++) {
-            if (this.table[i] == null) {
-                continue;
-            }
-            Node trav = this.table[i];
-            while (trav != null) {
-                numKeys++;
-                trav = trav.next;
-            }
-        }
-        return numKeys / this.table.length;
+        return (double) getNumKeys() / this.table.length;
     }
     
     public Object[] getAllKeys() {
@@ -193,6 +186,7 @@ public class ChainedHashTable implements HashTable {
             Node trav = this.table[i];
             while (trav != null) {
                 allValues[currPosition] = trav.values.remove();
+                currPosition++;
                 trav = trav.next;
             }
         }
